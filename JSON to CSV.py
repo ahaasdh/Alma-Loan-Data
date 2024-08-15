@@ -1,13 +1,17 @@
 import pandas as pd
 import json
+import os
+
+input_folder = 'input'
+output_folder = 'output'
 
 # Load JSON data from the completed loan file
-completed_json_file = 'all_completed_loan_data.json'
+completed_json_file = os.path.join(output_folder, 'all_completed_loan_data.json')
 with open(completed_json_file, 'r') as file:
     completed_data = json.load(file)
 
 # Load JSON data from the active loan file
-active_json_file = 'all_active_loan_data.json'
+active_json_file = os.path.join(output_folder, 'all_active_loan_data.json')
 with open(active_json_file, 'r') as file:
     active_data = json.load(file)
 
@@ -40,7 +44,7 @@ df = pd.DataFrame(all_loan_data)
 df.sort_values(by='loan_date', inplace=True)
 
 # Save the combined data to a CSV file
-output_csv = 'combined_loan_data.csv'
+output_csv = os.path.join(output_folder, 'combined_loan_data.csv')
 df.to_csv(output_csv, index=False)
 
 print(f"Combined loan data exported to {output_csv}")

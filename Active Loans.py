@@ -1,11 +1,19 @@
 import requests
 import json
 import csv
+import os
 
 # Set your Alma API key and the base URL for the Alma API
-api_key = ''
 base_url = 'https://api-na.hosted.exlibrisgroup.com/almaws/v1'
-csv_file = "titles.csv"
+input_folder = 'input'
+csv_file = os.path.join(input_folder, "titles.csv")
+output_folder = 'output'
+os.makedirs(output_folder, exist_ok=True)
+
+def get_api_key():
+    api_key_file = os.path.join(input_folder, 'api_key.txt')
+    with open(api_key_file, 'r') as file:
+        return file.read().strip()  # Return the API key
 
 def get_loan_data(api_key, mms_id):
     # Resource URL for loans endpoint
@@ -41,6 +49,9 @@ def get_loan_data(api_key, mms_id):
 
 all_loan_data = []
 
+# Get the API key before processing the CSV
+api_key = get_api_key()
+
 # Read MMS IDs from the CSV file
 with open(csv_file, 'r', encoding='utf-8-sig', newline='') as csvfile:
     reader = csv.DictReader(csvfile)
@@ -68,7 +79,7 @@ with open(csv_file, 'r', encoding='utf-8-sig', newline='') as csvfile:
                 print(f"Failed to retrieve loan data for book with MMS ID {mms_id}.")
 
 if all_loan_data:
-    output_file = "all_active_loan_data.json"
+    output_file = os.path.join(output_folder, 'all_active_loan_data.json')
     with open(output_file, 'w', encoding='utf-8') as jsonfile:
         json.dump(all_loan_data, jsonfile, indent=2)
 
